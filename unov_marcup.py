@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+#ecoding: utf-8
 
 import csv
 import re
@@ -41,7 +42,7 @@ no_symbols = []
 
 # First let's process our csv, unov_ds_analyzed.csv
 # Fieldnames 191__a,71020a,65117a,71127a,65007a,245__,246__,246__(2),246__(3),079__,269__,coverage,500,020__a,022__a,en_id,fr_id,es_id,ru_id,dl
-with open('unov_metadata.csv') as csvfile:
+with open('unov_metadata.csv', encoding='utf-8') as csvfile:
   reader = csv.DictReader(csvfile)
   for row in reader:
     if row['dl'] == 'y':
@@ -59,7 +60,7 @@ file_map = ast.literal_eval(open('file_map.dat','r').read())
 
 # Now let's open a file so we can write out our new records. We'll do something similar for updates.
 out_file = open('new.xml', 'wb+')
-out_file.write(bytes('<?xml version="1.0"?>' + "\n", 'UTF-8'))
+out_file.write(bytes('<?xml version="1.0"?>' + "\n",'UTF-8'))
 out_file.write(bytes("<collection>\n",'UTF-8'))
 for r in records_new:
   record = Record()
@@ -153,11 +154,11 @@ for r in records_new:
 
   for fft in ffts:
     if ffts[fft]:
-      this_subfields = ['a', ffts[fft][0], 'd', fft, 'n', str(ffts[fft]).split("/")[-1]]
+      this_subfields = ['a', ffts[fft][0], 'd', fft, 'n', str(ffts[fft]).split("/")[-1].split("'")[0]]
       #print(this_subfields)
       record.add_field(Field(tag='FFT', indicators=[' ',' '], subfields=this_subfields))
 
-  out_file.write(marcxml.record_to_xml(record))
+  out_file.write(marcxml.record_to_xml(record,encoding='utf-8'))
   #print(record)
 out_file.write(bytes("</collection>",'UTF-8'))
 out_file.close()
@@ -257,11 +258,11 @@ for record in records_update:
 
   for fft in ffts:
     if ffts[fft]:
-      this_subfields = ['a', ffts[fft][0], 'd', fft, 'n', str(ffts[fft]).split("/")[-1]]
+      this_subfields = ['a', ffts[fft][0], 'd', fft, 'n', str(ffts[fft]).split("/")[-1].split("'")[0]]
       #print(this_subfields)
       record.add_field(Field(tag='FFT', indicators=[' ',' '], subfields=this_subfields))
 
-  out_file.write(marcxml.record_to_xml(record))
+  out_file.write(marcxml.record_to_xml(record, encoding='utf-8'))
   #print(record)
 out_file.write(bytes("</collection>",'UTF-8'))
 out_file.close()
