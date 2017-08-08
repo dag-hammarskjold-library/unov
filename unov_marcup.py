@@ -158,7 +158,8 @@ for r in records_new:
       #print(this_subfields)
       record.add_field(Field(tag='FFT', indicators=[' ',' '], subfields=this_subfields))
 
-  out_file.write(marcxml.record_to_xml(record,encoding='utf-8'))
+  # This encoding parameter does nothing unless you have https://github.com/dag-hammarskjold-library/pymarc/commit/c3d2d83c694a03e361387db9bbb5bb30ce03c893#diff-99e2290f283e0e153f5411fb9a1a3dbf
+  out_file.write(marcxml.record_to_xml(record, encoding='utf-8'))
   #print(record)
 out_file.write(bytes("</collection>",'UTF-8'))
 out_file.close()
