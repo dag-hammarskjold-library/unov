@@ -40,15 +40,21 @@ records_new = []
 records_update = []
 no_symbols = []
 
-# First let's process our csv, unov_ds_analyzed.csv
+# First let's open up our symbol map. It will be useful in determining whether records REALLY are new or updated.
+symbol_map = ast.literal_eval(open('symbol_map.dat','r').read())
+
+# Next let's process our csv, unov_ds_analyzed.csv
 # Fieldnames 191__a,71020a,65117a,71127a,65007a,245__,246__,246__(2),246__(3),079__,269__,coverage,500,020__a,022__a,en_id,fr_id,es_id,ru_id,dl
 with open('unov_metadata.csv', encoding='utf-8') as csvfile:
   reader = csv.DictReader(csvfile)
   for row in reader:
-    if row['dl'] == 'y':
-      records_update.append(row)
-    else:
+    s = row['191__a'].split('||')[0]
+    try:
+      symbol_map[s]
+    except KeyError:
       records_new.append(row)
+      
+    records_update.append(row)
 
 # we don't want to create fields for any of these, or we want to transform them first
 skip_list = ['coverage','dl','en_id','fr_id','es_id','ru_id']
@@ -238,6 +244,14 @@ for record in records_update:
     print("Unable to find any file listings for this record:")
     print(record)
     pass
+
+  # Set the 001 controlfield because this is an existing record
+  # E/NL symbols are mismatched. 
+  if 'E/NL.' in this_symbol:
+    this_symbol = this_symbol.replace('E/NL.','E/NL/')
+    record['191']['a'] = this_symbol
+  c001 = symbol_map[this_symbol]
+  record.add_field(Field(tag="001", data=c001)) 
 
   ffts = {}
   for lang in ['en','fr','es','ru']:
