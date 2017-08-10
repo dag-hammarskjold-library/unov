@@ -94,6 +94,9 @@ def map_to_marc(r):
     #print(auth_code)
     record[f.tag].add_subfield('0',auth_code)
 
+  # Add 980
+  record.add_field(Field(tag='980', indicators=[' ',' '], subfields=['a','UNOV']))
+
   # Add 989
   record.add_field(Field(tag='989', indicators=[' ',' '], subfields=['a','Documents and Publications']))
 
@@ -150,11 +153,11 @@ with open('unov_metadata.csv', encoding='utf-8') as csvfile:
     elif this_symbol.replace('E/NL.','E/NL/') in symbol_map.keys():
       # Also definitely an update
       this_record.add_field(Field(tag='001', data=symbol_map[this_symbol.replace('E/NL.','E/NL/')]))
-      this_record.add_field(Field(tag='999', indicators=[' ',' '], subfields=['a','dlu20170809','b','20170809','c','u']))
+      this_record.add_field(Field(tag='999', indicators=[' ',' '], subfields=['a','dlu20170810','b','20170810','c','u']))
       update_records.append(this_record)
     else:
       # Definitely new
-      this_record.add_field(Field(tag='999', indicators=[' ',' '], subfields=['a','dlo20170809','b','20170809','c','o']))
+      this_record.add_field(Field(tag='999', indicators=[' ',' '], subfields=['a','dlo20170810','b','20170810','c','o']))
       new_records.append(this_record)
 
 print("New:",len(new_records))
@@ -171,7 +174,7 @@ with open('new.xml','wb+') as f:
 with open('update.xml','wb+') as f:
   f.write(bytes('<?xml version="1.0"?>' + "\n", 'UTF-8'))
   f.write(bytes("<collection>\n",'UTF-8'))
-  for record in new_records:
+  for record in update_records:
     f.write(marcxml.record_to_xml(record, encoding='utf-8'))
     f.write(bytes("\n","UTF-8"))
   f.write(bytes("</collection>",'UTF-8'))
