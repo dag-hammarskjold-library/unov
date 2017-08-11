@@ -1,1 +1,1 @@
--e git://github.com/dag-hammarskjold-library/pymarc.git@8c3bafa217c0d7ffe7e790a68275b871c8c0adb6
+git+https://github.com/dag-hammarskjold-library/pymarc.git@8c3bafa217c0d7ffe7e790a68275b871c8c0adb6
